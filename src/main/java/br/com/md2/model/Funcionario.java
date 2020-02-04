@@ -13,11 +13,10 @@ import javax.persistence.SequenceGenerator;
 
 @Entity
 public class Funcionario {
-
     @Id
     @Column(name="id", nullable=false, unique=true)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-    @SequenceGenerator(name="seq", sequenceName="nome_seq", allocationSize=1, initialValue=25)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="f_seq")
+    @SequenceGenerator(name="f_seq", sequenceName="func_seq", allocationSize=1, initialValue=1)
     private Long func_id;
 
     @Column(length=50, nullable=false, unique=false)
@@ -25,38 +24,24 @@ public class Funcionario {
 
     @OneToMany(mappedBy="funcionario", cascade=CascadeType.ALL)
     private List<FuncionarioTelefones> listaFuncTel;
-        
-    /**
-     * @deprecated hibernate only
-     */
+
+    /* Construtores */
     public Funcionario() {
-
     }
-
     public Funcionario(String nome) {
         this.nome = nome;
     }
 
-	public Long getFunc_id() {
-		return func_id;
-	}
-
-	public void setFunc_id(Long func_id) {
-		this.func_id = func_id;
-	}
-
+    /* Getters e Setter */
 	public String getNome() {
 		return nome;
 	}
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
 	public List<FuncionarioTelefones> getListaFuncTel() {
 		return listaFuncTel;
 	}
-
 	public void setListaFuncionarioTelefones(List<FuncionarioTelefones> listaFuncTel) {
 		this.listaFuncTel = listaFuncTel;
 	}

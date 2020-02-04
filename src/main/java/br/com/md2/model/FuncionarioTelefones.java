@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Funcionario_telefones")
 public class FuncionarioTelefones {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -23,35 +22,24 @@ public class FuncionarioTelefones {
 	
 	@Column(length=15)
 	private String telefones;
-		
+
+	/* Construtores */
 	public FuncionarioTelefones() {
-		
 	}
-	
 	public FuncionarioTelefones(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	
+	/* Getters e Setters */
 	public String getTelefones() {
 		return telefones;
 	}
-
 	public void setTelefones(String telefones) {
 		this.telefones = telefones;
 	}
-
 	public Funcionario getFuncionario() {
 		return funcionario;
 	}
-
 	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
