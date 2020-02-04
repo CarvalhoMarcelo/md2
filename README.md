@@ -1,6 +1,6 @@
-## Programa testando relacionamento de tabelas e anotacoes
+## Programa para testar relacionamento de tabelas e anotacoes
 
-# Utilizado:
+### Utilizado:
 
 * XAMPP para instalacao e servidor de MySQL
 * IDE Eclipse JEE 2019-06
