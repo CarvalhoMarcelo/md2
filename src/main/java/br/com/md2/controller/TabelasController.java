@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.md2.dao.TabelasDao;
 import br.com.md2.model.Autor;
@@ -21,7 +20,7 @@ import br.com.md2.model.Governador;
 import br.com.md2.model.Livro;
 import br.com.md2.model.Pedido;
 
-@Controller
+@RestController
 public class TabelasController {
 
 	@Autowired
@@ -29,50 +28,35 @@ public class TabelasController {
 	
     @GetMapping("/admin/tabelas")
     @Transactional
-    @ResponseBody
-    public void salva() {
-    	departamentoFuncionario();
-    	pedidoCliente();
-    	estadoGovernador();
-    	livroAutor();
+    public String salva() {
+    	String mensagem;
+       	mensagem = estadoGovernador();
+    	mensagem += "<br>" + departamentoFuncionario();
+    	mensagem += "<br>" + pedidoCliente();
+    	mensagem += "<br>" + livroAutor();    	
+    	return mensagem;
     }
 
-    /* Cria e Grava Livro <--> Autor (Many to Many) */
-    @ResponseBody
+    /* Cria e Grava Estado -- Governador *(One to One) */
+    private String estadoGovernador() {
+    	Estado estado = new Estado("DF");
+    	Governador governador = new Governador("Marcelo");
+    	estado.setGovernador(governador);
+   		String msg = tabelasDao.save(estado);
+    	return msg;
+    }
+    
+    /* Grava Livro <--> Autor (Many to Many) */
     private String livroAutor() {
-    	Livro livro1 = new Livro("Diversos Topicos");
-    	Livro livro2 = new Livro("Outros topicos");
-    	
-    	Autor autor1 = new Autor("Marcelo Carvalho");
-    	Autor autor2 = new Autor("Lucas Simoes");
-    	
-    	Set<Autor> listaDeAutores1 = new HashSet<>();
-    	listaDeAutores1.add(autor1);
-    	listaDeAutores1.add(autor2);
-    	livro1.setAutores(listaDeAutores1);
-
-    	Set<Autor> listaDeAutores2 = new HashSet<>();
-    	listaDeAutores2.add(autor1);
-    	livro2.setAutores(listaDeAutores2);
-    	
-    	tabelasDao.save(livro1);
-    	tabelasDao.save(livro2);
-    	
+    	Livro livro;
+    	livro = criaLivroAutor("Varios Topicos", "Marcelo Carvalho", "Lucas Simoes");
+    	tabelasDao.save(livro);
+    	livro = criaLivroAutor("Outros Topicos", "Marcelo Carvalho");
+    	tabelasDao.save(livro);
     	return "Livro/Autor criado com sucesso!";
     }
     
-    /* Cria e Grava Estado -- Governador *(One to One) */
-    @ResponseBody
-    private String estadoGovernador() {
-    	Estado estado = new Estado("MG");
-    	Governador governador = new Governador("Marcelo");
-    	estado.setGovernador(governador);
-    	tabelasDao.save(estado);
-    	return "Estado/Governador criado com sucesso!";
-    }
-    
-    /* Cria e Grava Departamento -> Funcionario (One to Many) */
-    @ResponseBody
+	/* Cria e Grava Departamento -> Funcionario (One to Many) */
     private String departamentoFuncionario() {
     	Departamento departamento = new Departamento("Contabilidade");
     	List<Funcionarios> listaDeFuncionarios = new ArrayList<Funcionarios>();    	
@@ -85,7 +69,6 @@ public class TabelasController {
     }
 
     /* Cria e grava Pedido -> Cliente (Many to One)*/
-    @ResponseBody
     private String pedidoCliente() {
     	Cliente cliente = new Cliente("Marcelo");
     	Set<Pedido> pedido = new HashSet<Pedido>();
@@ -112,5 +95,17 @@ public class TabelasController {
     	pedido.setCliente(cliente);
     	pedido.setNrPedido(nrPedido);
     	return pedido;
+    }
+    
+    /* Cria Livro e Autor */
+    private Livro criaLivroAutor(String livro, String ...autor) {
+    	Livro liv = new Livro(livro);
+    	Set<Autor> listaDeAutores = new HashSet<>();
+    	for(String aut : autor) {
+    		Autor auto = new Autor(aut);
+    		listaDeAutores.add(auto);
+    	}
+    	liv.setAutores(listaDeAutores);
+    	return liv;
     }
 }
